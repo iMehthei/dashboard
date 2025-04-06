@@ -1,89 +1,130 @@
 import postgres from 'postgres';
 import {
+  Customer,
   CustomerField,
   CustomersTableType,
+  Invoice,
   InvoiceForm,
   InvoicesTable,
-  LatestInvoiceRaw,
+  LatestInvoice,
+  // LatestInvoiceRaw,
   Revenue,
 } from './definitions';
 import { formatCurrency } from './utils';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
-export async function fetchRevenue() {
+export async function fetchRevenue(): Promise<Revenue[]> {
   try {
-    // Artificially delay a response for demo purposes.
-    // Don't do this in production :)
+    const response = await fetch('http://localhost:3000/revenue'); // ارسال درخواست به endpoint محلی
 
-    // console.log('Fetching revenue data...');
-    // await new Promise((resolve) => setTimeout(resolve, 3000));
+    if (!response.ok) {
+      throw new Error('Failed to fetch revenue data.');
+    }
 
-    const data = await sql<Revenue[]>`SELECT * FROM revenue`;
+    await new Promise((resolve) => setTimeout(resolve, 3000));
 
-    // console.log('Data fetch completed after 3 seconds.');
+    const data: Revenue[] = await response.json(); // تبدیل داده‌ها به فرمت JSON
 
     return data;
   } catch (error) {
-    console.error('Database Error:', error);
+    console.error('Fetch Error:', error);
     throw new Error('Failed to fetch revenue data.');
   }
 }
 
-export async function fetchLatestInvoices() {
+export async function fetchLatestInvoices(): Promise<LatestInvoice[]> {
   try {
-    const data = await sql<LatestInvoiceRaw[]>`
-      SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
-      FROM invoices
-      JOIN customers ON invoices.customer_id = customers.id
-      ORDER BY invoices.date DESC
-      LIMIT 5`;
+    const invoicesResponse = await fetch('http://localhost:3000/invoices'); // واکشی داده‌های فاکتورها از JSON
+    if (!invoicesResponse.ok) {
+      throw new Error('Failed to fetch invoices from the server.');
+    }
+    const invoicesData: Invoice[] = await invoicesResponse.json();
 
-    const latestInvoices = data.map((invoice) => ({
-      ...invoice,
-      amount: formatCurrency(invoice.amount),
-    }));
+    const customersResponse = await fetch('http://localhost:3000/customers'); // واکشی داده‌های مشتریان از JSON
+    if (!customersResponse.ok) {
+      throw new Error('Failed to fetch customers from the server.');
+    }
+    const customersData: Customer[] = await customersResponse.json();
+
+    const latestInvoices = invoicesData // ترکیب داده‌ها: ارتباط دادن فاکتور با اطلاعات مشتری مرتبط
+      .map((invoice) => {
+        const relatedCustomer = customersData.find( // جستجو برای یافتن مشتری مرتبط با customer_id
+          (customer) => customer.id === invoice.customer_id
+        );
+
+        if (!relatedCustomer) { // اگر مشتری مرتبط پیدا نشود، یک خطا پرتاب کن
+          throw new Error(`Customer not found for invoice ID: ${invoice.id}`);
+        }
+
+        return { // بازسازی ساختار داده مشابه کوئری SQL
+          id: invoice.id, // شناسه فاکتور
+          name: relatedCustomer.name, // نام مشتری
+          email: relatedCustomer.email, // ایمیل مشتری
+          image_url: relatedCustomer.image_url, // آدرس تصویر مشتری
+          amount: formatCurrency(invoice.amount), // فرمت مقدار مالی
+          date: invoice.date, // تاریخ فاکتور
+        };
+      })
+      .sort((invoiceA, invoiceB) => new Date(invoiceB.date).getTime() - new Date(invoiceA.date).getTime()) // مرتب‌سازی نزولی بر اساس تاریخ
+      .slice(0, 5); // دریافت فقط پنج فاکتور آخر
+
+    // بازگرداندن داده‌های فاکتورهای نهایی
     return latestInvoices;
   } catch (error) {
-    console.error('Database Error:', error);
+    // ثبت خطا در صورت رخ دادن مشکلی در فرایند واکشی یا پردازش داده‌ها
+    console.error('Error occurred while fetching latest invoices:', error);
     throw new Error('Failed to fetch the latest invoices.');
   }
 }
 
+
+
 export async function fetchCardData() {
   try {
-    // You can probably combine these into a single SQL query
-    // However, we are intentionally splitting them to demonstrate
-    // how to initialize multiple queries in parallel with JS.
-    const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
-    const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
-    const invoiceStatusPromise = sql`SELECT
-         SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
-         SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
-         FROM invoices`;
+    // واکشی داده‌های فاکتورها از JSON
+    const invoicesResponse = await fetch('http://localhost:3000/invoices');
+    if (!invoicesResponse.ok) {
+      throw new Error('Failed to fetch invoices from the server.');
+    }
+    const invoicesData: Invoice[] = await invoicesResponse.json();
 
-    const data = await Promise.all([
-      invoiceCountPromise,
-      customerCountPromise,
-      invoiceStatusPromise,
-    ]);
+    // واکشی داده‌های مشتریان از JSON
+    const customersResponse = await fetch('http://localhost:3000/customers');
+    if (!customersResponse.ok) {
+      throw new Error('Failed to fetch customers from the server.');
+    }
+    const customersData: Customer[] = await customersResponse.json();
 
-    const numberOfInvoices = Number(data[0][0].count ?? '0');
-    const numberOfCustomers = Number(data[1][0].count ?? '0');
-    const totalPaidInvoices = formatCurrency(data[2][0].paid ?? '0');
-    const totalPendingInvoices = formatCurrency(data[2][0].pending ?? '0');
+    // محاسبه تعداد فاکتورها
+    const numberOfInvoices = invoicesData.length;
 
+    // محاسبه تعداد مشتریان
+    const numberOfCustomers = customersData.length;
+
+    // محاسبه مجموع وضعیت‌های `paid` و `pending`
+    const totalPaidInvoices = invoicesData
+      .filter((invoice) => invoice.status === 'paid')
+      .reduce((sum, invoice) => sum + invoice.amount, 0);
+
+    const totalPendingInvoices = invoicesData
+      .filter((invoice) => invoice.status === 'pending')
+      .reduce((sum, invoice) => sum + invoice.amount, 0);
+
+    // بازگرداندن داده‌ها با فرمت مورد نظر
     return {
       numberOfCustomers,
       numberOfInvoices,
-      totalPaidInvoices,
-      totalPendingInvoices,
+      totalPaidInvoices: formatCurrency(totalPaidInvoices), // فرمت مقدار `paid`
+      totalPendingInvoices: formatCurrency(totalPendingInvoices), // فرمت مقدار `pending`
     };
   } catch (error) {
-    console.error('Database Error:', error);
+    // ثبت خطا در صورت رخ دادن مشکلی در واکشی یا پردازش داده‌ها
+    console.error('Fetch Error:', error);
     throw new Error('Failed to fetch card data.');
   }
 }
+
 
 const ITEMS_PER_PAGE = 6;
 export async function fetchFilteredInvoices(
