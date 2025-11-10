@@ -1,3 +1,5 @@
+import clsx from "clsx";
+
 // Loading animation
 const shimmer =
   'before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/60 before:to-transparent';
@@ -194,10 +196,7 @@ export function InvoicesTableSkeleton() {
                 <th scope="col" className="px-3 py-5 font-medium">
                   Status
                 </th>
-                <th
-                  scope="col"
-                  className="relative pb-4 pl-3 pr-6 pt-2 sm:pr-6"
-                >
+                <th scope="col" className="relative pb-4 pl-3 pr-6 pt-2 sm:pr-6">
                   <span className="sr-only">Edit</span>
                 </th>
               </tr>
@@ -211,6 +210,153 @@ export function InvoicesTableSkeleton() {
               <TableRowSkeleton />
             </tbody>
           </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function PaginationSkeleton() {
+  const fakeButtons = Array.from({ length: 3 });
+
+  return (
+    <div className="relative overflow-hidden">
+      <div className={`${shimmer} mt-5 flex w-full justify-center`}>
+        <div className="inline-flex animate-pulse">
+          {/* Left Arrow */}
+          <div
+            className={clsx(
+              'flex h-10 w-10 items-center justify-center rounded-md border',
+              'bg-gray-200 mr-2 md:mr-4',
+            )}
+          />
+
+          {/* Page Numbers */}
+          <div className="flex -space-x-px">
+            {fakeButtons.map((_, i) => (
+              <div
+                key={i}
+                className={clsx(
+                  'flex h-10 w-10 items-center justify-center text-sm border',
+                  'bg-gray-200 text-transparent select-none',
+                  {
+                    'rounded-l-md': i === 0,
+                    'rounded-r-md': i === fakeButtons.length - 1,
+                  },
+                )}
+              >
+                0
+              </div>
+            ))}
+          </div>
+
+          {/* Right Arrow */}
+          <div
+            className={clsx(
+              'flex h-10 w-10 items-center justify-center rounded-md border',
+              'bg-gray-200 ml-2 md:ml-4',
+            )}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function CustomersTableSkeleton() {
+  const skeletonRows = Array.from({ length: 5 });
+  const skeletonCards = Array.from({ length: 3 });
+
+  return (
+    <div className="mt-6 flow-root">
+      <div className="overflow-x-auto">
+        <div className="inline-block min-w-full align-middle">
+          <div className="overflow-hidden rounded-md bg-gray-50 p-2 md:pt-0">
+
+            <div className="md:hidden">
+              {skeletonCards.map((_, i) => (
+                <div
+                  key={i}
+                  className="mb-2 w-full rounded-md bg-white p-4 relative overflow-hidden"
+                >
+                  <div className="absolute inset-0 shimmer" />
+
+                  <div className="flex items-center justify-between border-b pb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="h-7 w-7 rounded-full bg-gray-200" />
+                      <div className="h-4 w-24 bg-gray-200 rounded" />
+                    </div>
+                  </div>
+
+                  <div className="flex justify-between border-b py-5">
+                    <div className="flex flex-col w-1/2 gap-1">
+                      <div className="h-3 w-12 bg-gray-200 rounded" />
+                      <div className="h-4 w-16 bg-gray-200 rounded" />
+                    </div>
+                    <div className="flex flex-col w-1/2 gap-1">
+                      <div className="h-3 w-10 bg-gray-200 rounded" />
+                      <div className="h-4 w-16 bg-gray-200 rounded" />
+                    </div>
+                  </div>
+
+                  <div className="pt-4">
+                    <div className="h-3 w-24 bg-gray-200 rounded" />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <table className="hidden min-w-full rounded-md text-gray-900 md:table">
+              <thead className="rounded-md bg-gray-50 text-left text-sm font-normal">
+                <tr>
+                  <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
+                    Name
+                  </th>
+                  <th scope="col" className="px-3 py-5 font-medium">
+                    Email
+                  </th>
+                  <th scope="col" className="px-3 py-5 font-medium">
+                    Total Invoices
+                  </th>
+                  <th scope="col" className="px-3 py-5 font-medium">
+                    Total Pending
+                  </th>
+                  <th scope="col" className="px-4 py-5 font-medium">
+                    Total Paid
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody className="divide-y divide-gray-200">
+                {skeletonRows.map((_, i) => (
+                  <tr key={i} className="relative bg-white overflow-hidden">
+
+                    <td className="whitespace-nowrap px-4 py-5 sm:pl-6">
+                      <div className="flex items-center gap-3">
+                        <div className="h-7 w-7 rounded-full bg-gray-200" />
+                        <div className="h-4 w-24 bg-gray-200 rounded" />
+                      </div>
+                    </td>
+                    <td className="px-4 py-5">
+                      <div className="h-4 w-40 bg-gray-200 rounded" />
+                    </td>
+                    <td className="px-4 py-5">
+                      <div className="h-4 w-10 bg-gray-200 rounded" />
+                    </td>
+                    <td className="px-4 py-5">
+                      <div className="h-4 w-10 bg-gray-200 rounded" />
+                    </td>
+                    <td className="px-4 py-5">
+                      <div className="h-4 w-10 bg-gray-200 rounded" />
+                    </td>
+                    <td colSpan={5} className={`${shimmer} absolute inset-0 shimmer`} />
+
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+          </div>
         </div>
       </div>
     </div>
