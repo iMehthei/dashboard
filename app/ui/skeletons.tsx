@@ -1,3 +1,6 @@
+"use client"
+
+import { EditCell, MobileTable, MobileTableRow, MobileTableRowContainer, Table, TableContainer, TBody, TBodyRow, TD, THead } from '@/app/ui/table';
 import clsx from "clsx";
 
 // Loading animation
@@ -84,133 +87,140 @@ export function LatestInvoicesSkeleton() {
   );
 }
 
-export default function DashboardSkeleton() {
-  return (
-    <>
-      <div
-        className={`${shimmer} relative mb-4 h-8 w-36 overflow-hidden rounded-md bg-gray-100`}
-      />
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <CardSkeleton />
-        <CardSkeleton />
-        <CardSkeleton />
-        <CardSkeleton />
-      </div>
-      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
-        <RevenueChartSkeleton />
-        <LatestInvoicesSkeleton />
-      </div>
-    </>
-  );
-}
+export function InvoicesTableSkeleton() {
+  const tableHeadTitles = ['Customer', 'Email', 'Amount', 'Date', 'Status', 'Edit'];
 
-export function TableRowSkeleton() {
   return (
-    <tr className="w-full border-b border-gray-100 last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg">
-      {/* Customer Name and Image */}
-      <td className="relative overflow-hidden whitespace-nowrap py-3 pl-6 pr-3">
-        <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-full bg-gray-100"></div>
-          <div className="h-6 w-24 rounded bg-gray-100"></div>
-        </div>
-      </td>
-      {/* Email */}
-      <td className="whitespace-nowrap px-3 py-3">
-        <div className="h-6 w-32 rounded bg-gray-100"></div>
-      </td>
-      {/* Amount */}
-      <td className="whitespace-nowrap px-3 py-3">
-        <div className="h-6 w-16 rounded bg-gray-100"></div>
-      </td>
-      {/* Date */}
-      <td className="whitespace-nowrap px-3 py-3">
-        <div className="h-6 w-16 rounded bg-gray-100"></div>
-      </td>
-      {/* Status */}
-      <td className="whitespace-nowrap px-3 py-3">
-        <div className="h-6 w-16 rounded bg-gray-100"></div>
-      </td>
-      {/* Actions */}
-      <td className="whitespace-nowrap py-3 pl-6 pr-3">
-        <div className="flex justify-end gap-3">
-          <div className="h-[38px] w-[38px] rounded bg-gray-100"></div>
-          <div className="h-[38px] w-[38px] rounded bg-gray-100"></div>
-        </div>
-      </td>
-    </tr>
-  );
-}
+    <div className='relative overflow-hidden'>
+      <div className={shimmer}>
+        <TableContainer>
+          <MobileTable>
+            {Array.from({ length: 6 }).map((_, idx) => (
+              <MobileTableRowContainer key={idx}>
+                <MobileTableRow>
+                  <div className='pb-2'>
+                    <div className="flex items-center gap-3">
+                      <div className="h-7 w-7 rounded-full bg-gray-300" />
+                      <div className="h-4 w-24 bg-gray-300 rounded" />
+                    </div>
+                    <div className="h-3 mt-2 w-24 bg-gray-300 rounded" />
+                  </div>
+                  <div className="h-6 w-16 bg-gray-300 rounded-full" />
+                </MobileTableRow>
+                <MobileTableRow>
+                  <div className="flex flex-col gap-2 py-1">
+                    <div className="h-5 w-16 bg-gray-300 rounded" />
+                    <div className="h-4 w-20 bg-gray-300 rounded" />
+                  </div>
+                  <EditCell>
+                    <div className="size-9 bg-gray-300 rounded" />
+                    <div className="size-9 bg-gray-300 rounded" />
+                  </EditCell>
+                </MobileTableRow>
+              </MobileTableRowContainer>
+            ))}
+          </MobileTable>
 
-export function InvoicesMobileSkeleton() {
-  return (
-    <div className="mb-2 w-full rounded-md bg-white p-4">
-      <div className="flex items-center justify-between border-b border-gray-100 pb-8">
-        <div className="flex items-center">
-          <div className="mr-2 h-8 w-8 rounded-full bg-gray-100"></div>
-          <div className="h-6 w-16 rounded bg-gray-100"></div>
-        </div>
-        <div className="h-6 w-16 rounded bg-gray-100"></div>
-      </div>
-      <div className="flex w-full items-center justify-between pt-4">
-        <div>
-          <div className="h-6 w-16 rounded bg-gray-100"></div>
-          <div className="mt-2 h-6 w-24 rounded bg-gray-100"></div>
-        </div>
-        <div className="flex justify-end gap-2">
-          <div className="h-10 w-10 rounded bg-gray-100"></div>
-          <div className="h-10 w-10 rounded bg-gray-100"></div>
-        </div>
+          {/* Desktop */}
+          <Table>
+            <THead titles={tableHeadTitles} />
+            <TBody>
+              {Array.from({ length: 6 }).map((_, idx) => (
+                <TBodyRow key={idx}>
+                  <TD>
+                    <div className="flex items-center gap-3">
+                      <div className="h-7 w-7 rounded-full bg-gray-300" />
+                      <div className="h-4 w-24 bg-gray-300 rounded" />
+                    </div>
+                  </TD>
+                  <TD><div className="h-4 w-32 bg-gray-300 rounded" /></TD>
+                  <TD><div className="h-4 w-16 bg-gray-300 rounded" /></TD>
+                  <TD><div className="h-4 w-20 bg-gray-300 rounded" /></TD>
+                  <TD><div className="h-6 w-16 bg-gray-300 rounded-full" /></TD>
+                  <TD>
+                    <div className="flex gap-3">
+                      <div className="h-9 w-9 bg-gray-300 rounded" />
+                      <div className="h-9 w-9 bg-gray-300 rounded" />
+                    </div>
+                  </TD>
+                </TBodyRow>
+              ))}
+            </TBody>
+          </Table>
+        </TableContainer>
       </div>
     </div>
   );
 }
 
-export function InvoicesTableSkeleton() {
+export function CustomersTableSkeleton() {
+  const tableHeadTitles = ['Name', 'Email', 'Total Invoices', 'Total Pending', 'Total Paid', 'Edit'];
+
   return (
-    <div className="mt-6 flow-root">
-      <div className="inline-block min-w-full align-middle">
-        <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
-          <div className="md:hidden">
-            <InvoicesMobileSkeleton />
-            <InvoicesMobileSkeleton />
-            <InvoicesMobileSkeleton />
-            <InvoicesMobileSkeleton />
-            <InvoicesMobileSkeleton />
-            <InvoicesMobileSkeleton />
-          </div>
-          <table className="hidden min-w-full text-gray-900 md:table">
-            <thead className="rounded-lg text-left text-sm font-normal">
-              <tr>
-                <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Customer
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Email
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Amount
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Date
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Status
-                </th>
-                <th scope="col" className="relative pb-4 pl-3 pr-6 pt-2 sm:pr-6">
-                  <span className="sr-only">Edit</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white">
-              <TableRowSkeleton />
-              <TableRowSkeleton />
-              <TableRowSkeleton />
-              <TableRowSkeleton />
-              <TableRowSkeleton />
-              <TableRowSkeleton />
-            </tbody>
-          </table>
-        </div>
+    <div className='relative overflow-hidden'>
+      <div className={`${shimmer}`}>
+        <TableContainer>
+          {/* Mobile */}
+          <MobileTable>
+            {Array.from({ length: 6 }).map((_, idx) => (
+              <MobileTableRowContainer key={idx}>
+                <MobileTableRow>
+                  <div className='py-1'>
+                    <div className="flex items-center gap-3">
+                      <div className="h-7 w-7 rounded-full bg-gray-300" />
+                      <div className="h-4 w-24 bg-gray-300 rounded" />
+                    </div>
+                    <div className="h-3 mt-2 w-24 bg-gray-300 rounded" />
+                  </div>
+                </MobileTableRow>
+                <MobileTableRow>
+                  <div className='py-1 flex w-full'>
+                    <div className="flex w-1/2 flex-col gap-1">
+                      <div className="h-3 w-12 bg-gray-300 rounded" />
+                      <div className="h-4 w-16 bg-gray-300 rounded" />
+                    </div>
+                    <div className="flex w-1/2 flex-col gap-1">
+                      <div className="h-3 w-12 bg-gray-300 rounded" />
+                      <div className="h-4 w-16 bg-gray-300 rounded" />
+                    </div>
+                  </div>
+                </MobileTableRow>
+                <MobileTableRow>
+                  <div className='py-1'>
+                    <div className="h-4 w-24 bg-gray-300 rounded" />
+                  </div>
+                </MobileTableRow>
+              </MobileTableRowContainer>
+            ))}
+          </MobileTable>
+
+          {/* Desktop */}
+          <Table>
+            <THead titles={tableHeadTitles} />
+            <TBody>
+              {Array.from({ length: 6 }).map((_, idx) => (
+                <TBodyRow key={idx}>
+                  <TD>
+                    <div className="flex items-center gap-3">
+                      <div className="h-7 w-7 rounded-full bg-gray-300" />
+                      <div className="h-4 w-24 bg-gray-300 rounded" />
+                    </div>
+                  </TD>
+                  <TD><div className="h-4 w-32 bg-gray-300 rounded" /></TD>
+                  <TD><div className="h-4 w-8 bg-gray-300 rounded" /></TD>
+                  <TD><div className="h-4 w-16 bg-gray-300 rounded" /></TD>
+                  <TD><div className="h-4 w-16 bg-gray-300 rounded" /></TD>
+                  <TD>
+                    <div className="flex gap-3">
+                      <div className="h-9 w-9 bg-gray-300 rounded" />
+                      <div className="h-9 w-9 bg-gray-300 rounded" />
+                    </div>
+                  </TD>
+                </TBodyRow>
+              ))}
+            </TBody>
+          </Table>
+        </TableContainer>
       </div>
     </div>
   );
@@ -222,12 +232,12 @@ export function PaginationSkeleton() {
   return (
     <div className="relative overflow-hidden">
       <div className={`${shimmer} mt-5 flex w-full justify-center`}>
-        <div className="inline-flex animate-pulse">
+        <div className="inline-flex">
           {/* Left Arrow */}
           <div
             className={clsx(
               'flex h-10 w-10 items-center justify-center rounded-md border',
-              'bg-gray-200 mr-2 md:mr-4',
+              'bg-gray-300 mr-2 md:mr-4',
             )}
           />
 
@@ -238,7 +248,7 @@ export function PaginationSkeleton() {
                 key={i}
                 className={clsx(
                   'flex h-10 w-10 items-center justify-center text-sm border',
-                  'bg-gray-200 text-transparent select-none',
+                  'bg-gray-300 text-transparent select-none',
                   {
                     'rounded-l-md': i === 0,
                     'rounded-r-md': i === fakeButtons.length - 1,
@@ -254,109 +264,9 @@ export function PaginationSkeleton() {
           <div
             className={clsx(
               'flex h-10 w-10 items-center justify-center rounded-md border',
-              'bg-gray-200 ml-2 md:ml-4',
+              'bg-gray-300 ml-2 md:ml-4',
             )}
           />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export function CustomersTableSkeleton() {
-  const skeletonRows = Array.from({ length: 5 });
-  const skeletonCards = Array.from({ length: 3 });
-
-  return (
-    <div className="mt-6 flow-root">
-      <div className="overflow-x-auto">
-        <div className="inline-block min-w-full align-middle">
-          <div className="overflow-hidden rounded-md bg-gray-50 p-2 md:pt-0">
-
-            <div className="md:hidden">
-              {skeletonCards.map((_, i) => (
-                <div
-                  key={i}
-                  className="mb-2 w-full rounded-md bg-white p-4 relative overflow-hidden"
-                >
-                  <div className="absolute inset-0 shimmer" />
-
-                  <div className="flex items-center justify-between border-b pb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="h-7 w-7 rounded-full bg-gray-200" />
-                      <div className="h-4 w-24 bg-gray-200 rounded" />
-                    </div>
-                  </div>
-
-                  <div className="flex justify-between border-b py-5">
-                    <div className="flex flex-col w-1/2 gap-1">
-                      <div className="h-3 w-12 bg-gray-200 rounded" />
-                      <div className="h-4 w-16 bg-gray-200 rounded" />
-                    </div>
-                    <div className="flex flex-col w-1/2 gap-1">
-                      <div className="h-3 w-10 bg-gray-200 rounded" />
-                      <div className="h-4 w-16 bg-gray-200 rounded" />
-                    </div>
-                  </div>
-
-                  <div className="pt-4">
-                    <div className="h-3 w-24 bg-gray-200 rounded" />
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <table className="hidden min-w-full rounded-md text-gray-900 md:table">
-              <thead className="rounded-md bg-gray-50 text-left text-sm font-normal">
-                <tr>
-                  <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                    Name
-                  </th>
-                  <th scope="col" className="px-3 py-5 font-medium">
-                    Email
-                  </th>
-                  <th scope="col" className="px-3 py-5 font-medium">
-                    Total Invoices
-                  </th>
-                  <th scope="col" className="px-3 py-5 font-medium">
-                    Total Pending
-                  </th>
-                  <th scope="col" className="px-4 py-5 font-medium">
-                    Total Paid
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody className="divide-y divide-gray-200">
-                {skeletonRows.map((_, i) => (
-                  <tr key={i} className="relative bg-white overflow-hidden">
-
-                    <td className="whitespace-nowrap px-4 py-5 sm:pl-6">
-                      <div className="flex items-center gap-3">
-                        <div className="h-7 w-7 rounded-full bg-gray-200" />
-                        <div className="h-4 w-24 bg-gray-200 rounded" />
-                      </div>
-                    </td>
-                    <td className="px-4 py-5">
-                      <div className="h-4 w-40 bg-gray-200 rounded" />
-                    </td>
-                    <td className="px-4 py-5">
-                      <div className="h-4 w-10 bg-gray-200 rounded" />
-                    </td>
-                    <td className="px-4 py-5">
-                      <div className="h-4 w-10 bg-gray-200 rounded" />
-                    </td>
-                    <td className="px-4 py-5">
-                      <div className="h-4 w-10 bg-gray-200 rounded" />
-                    </td>
-                    <td colSpan={5} className={`${shimmer} absolute inset-0 shimmer`} />
-
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
-          </div>
         </div>
       </div>
     </div>

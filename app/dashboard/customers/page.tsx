@@ -1,5 +1,5 @@
 import CustomersTable from '@/app/ui/customers/table';
-import { CustomersTableSkeleton } from '@/app/ui/skeletons';
+import { CustomersTableSkeleton, PaginationSkeleton } from '@/app/ui/skeletons';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { lusitana } from '@/app/ui/fonts';
@@ -22,13 +22,16 @@ export default async function Page(props: {
 
   return (
     <div className="w-full">
-      <h1 className={`${lusitana.className} mb-8 text-xl md:text-2xl`}>
-        Customers
-      </h1>
-      <Search placeholder="Search customers..." />
+      <div className="flex w-full items-center justify-between">
+        <h1 className={`${lusitana.className} text-xl md:text-2xl`}>Customers</h1>
+      </div>
+      <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
+        <Search placeholder="Search customers..." />
+      </div>
       <Suspense fallback={<CustomersTableSkeleton />}>
         <CustomersTable query={query} currentPage={currentPage} />
       </Suspense>
+      <PaginationSkeleton />
     </div>
   );
 }
