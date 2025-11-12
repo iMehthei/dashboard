@@ -132,3 +132,8 @@ export async function authenticate(
     throw error;
   }
 }
+
+export async function deleteCustomer(id: string) {
+  await sql`DELETE FROM customers WHERE id = ${id}`;
+  revalidatePath('/dashboard/customers');
+}

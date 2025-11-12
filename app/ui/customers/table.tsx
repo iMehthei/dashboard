@@ -1,7 +1,6 @@
-import Image from 'next/image';
 import { fetchFilteredCustomers } from '@/app/lib/data';
-import { EditCell, MobileTable, MobileTableRow, MobileTableRowContainer, Table, TableContainer, TBody, TBodyRow, TD, THead, UserCell } from '../table';
-import { DeleteInvoice, UpdateInvoice } from '../invoices/buttons';
+import { EditCell, MobileTable, MobileTableRow, MobileTableRowContainer, Table, TableContainer, TBody, TBodyRow, TD, THead, UserCell } from '@/app/ui/table';
+import { DeleteCustomer, UpdateCustomer } from '@/app/ui/customers/buttons';
 
 export default async function CustomersTable({
   query,
@@ -10,7 +9,7 @@ export default async function CustomersTable({
   query: string;
   currentPage: number;
 }) {
-  
+
   const customers = await fetchFilteredCustomers(query, currentPage)
   const tableHeadTitles = ['Name', 'Email', 'Total Invoices', 'Total Pending', 'Total Paid', 'Edit']
 
@@ -61,8 +60,8 @@ export default async function CustomersTable({
               </TD>
               <TD>
                 <EditCell>
-                  <UpdateInvoice id={'invoice.id'} />
-                  <DeleteInvoice id={'invoice.id'} />
+                  <UpdateCustomer id={'invoice.id'} />
+                  <DeleteCustomer id={customer.id} />
                 </EditCell>
               </TD>
             </TBodyRow>

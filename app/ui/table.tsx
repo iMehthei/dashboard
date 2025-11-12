@@ -26,7 +26,7 @@ export function MobileTable({ children }: { children: React.ReactNode }) {
 
 export function TableContainer({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mt-6 flow-root w-full">
+    <div className="mt-6 flow-root w-full overflow-x-auto">
       <div className="inline-block min-w-full w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
           {children}
@@ -89,7 +89,7 @@ export function UserCell({ image_url, name, email }: { image_url: string, name: 
           height={28}
           alt={`${name}'s profile picture`}
         />
-        <p className='truncate'>{name}</p>
+        <p className=''>{name}</p>
       </div>
       {email && <p className="text-sm text-gray-500">{email}</p>}
     </div>
@@ -106,7 +106,7 @@ export function TBodyRow({ children }: { children: React.ReactNode }) {
 
 export function TD({ children }: { children: React.ReactNode }) {
   return (
-    <td className="whitespace-nowrap last:pl-6 first:pl-6 px-3 py-3">
+    <td className="whitespace-nowrap last:pl-6 first:pl-6 px-3 py-3 w-auto">
       {children}
     </td>
   )
