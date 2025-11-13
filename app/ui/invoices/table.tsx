@@ -1,7 +1,7 @@
 import { UpdateInvoice, DeleteInvoice } from '@/app/ui/invoices/buttons';
 import InvoiceStatus from '@/app/ui/invoices/status';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
-import { fetchFilteredInvoices } from '@/app/lib/data';
+import { fetchFilteredInvoices } from '@/app/lib/invoices/data';
 import { EditCell, MobileTable, MobileTableRow, MobileTableRowContainer, Table, TableContainer, TBody, TBodyRow, TD, THead, UserCell } from '@/app/ui/table';
 
 export default async function InvoicesTable({
@@ -11,7 +11,7 @@ export default async function InvoicesTable({
   query: string;
   currentPage: number;
 }) {
-  
+
   const invoices = await fetchFilteredInvoices(query, currentPage);
   const tableHeadTitles = ['Customer', 'Email', 'Amount', 'Date', 'Status', 'Edit']
 

@@ -1,4 +1,4 @@
-import { fetchFilteredCustomers } from '@/app/lib/data';
+import { fetchFilteredCustomers } from '@/app/lib/customers/data';
 import { EditCell, MobileTable, MobileTableRow, MobileTableRowContainer, Table, TableContainer, TBody, TBodyRow, TD, THead, UserCell } from '@/app/ui/table';
 import { DeleteCustomer, UpdateCustomer } from '@/app/ui/customers/buttons';
 
@@ -60,7 +60,7 @@ export default async function CustomersTable({
               </TD>
               <TD>
                 <EditCell>
-                  <UpdateCustomer id={'invoice.id'} />
+                  <UpdateCustomer id={customer.id} />
                   <DeleteCustomer id={customer.id} />
                 </EditCell>
               </TD>

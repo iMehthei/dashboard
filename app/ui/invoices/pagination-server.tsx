@@ -1,4 +1,4 @@
-import { fetchInvoicesPages } from "@/app/lib/data";
+import { fetchInvoicesPages } from '@/app/lib/invoices/data';
 import PaginationClient from "@/app/ui/invoices/pagination-client";
 
 export default async function Pagination({ query }: { query: string }) {

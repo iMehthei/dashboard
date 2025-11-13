@@ -1,0 +1,33 @@
+import Form from '@/app/ui/customers/form';
+import Breadcrumbs from '@/app/ui/breadcrumbs';
+import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { fetchCustomerById } from '@/app/lib/customers/data';
+
+export const metadata: Metadata = {
+  title: 'Edit Customer',
+};
+
+export default async function Page(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
+  const id = params.id;
+  const customer = await fetchCustomerById(id)
+
+  if (!customer) notFound()
+
+  return (
+    <main>
+      <Breadcrumbs
+        breadcrumbs={[
+          { label: 'Customers', href: '/dashboard/customers' },
+          {
+            label: 'Edit Customer',
+            href: '/dashboard/customers/create',
+            active: true,
+          },
+        ]}
+      />
+      <Form customer={customer} />
+    </main>
+  );
+}

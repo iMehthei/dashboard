@@ -100,21 +100,21 @@ export function InvoicesTableSkeleton() {
                 <MobileTableRow>
                   <div className='pb-2'>
                     <div className="flex items-center gap-3">
-                      <div className="h-7 w-7 rounded-full bg-gray-300" />
-                      <div className="h-4 w-24 bg-gray-300 rounded" />
+                      <div className="h-7 w-7 rounded-full bg-gray-200" />
+                      <div className="h-4 w-24 bg-gray-200 rounded" />
                     </div>
-                    <div className="h-3 mt-2 w-24 bg-gray-300 rounded" />
+                    <div className="h-3 mt-2 w-24 bg-gray-200 rounded" />
                   </div>
-                  <div className="h-6 w-16 bg-gray-300 rounded-full" />
+                  <div className="h-6 w-16 bg-gray-200 rounded-full" />
                 </MobileTableRow>
                 <MobileTableRow>
                   <div className="flex flex-col gap-2 py-1">
-                    <div className="h-5 w-16 bg-gray-300 rounded" />
-                    <div className="h-4 w-20 bg-gray-300 rounded" />
+                    <div className="h-5 w-16 bg-gray-200 rounded" />
+                    <div className="h-4 w-20 bg-gray-200 rounded" />
                   </div>
                   <EditCell>
-                    <div className="size-9 bg-gray-300 rounded" />
-                    <div className="size-9 bg-gray-300 rounded" />
+                    <div className="size-9 bg-gray-200 rounded" />
+                    <div className="size-9 bg-gray-200 rounded" />
                   </EditCell>
                 </MobileTableRow>
               </MobileTableRowContainer>
@@ -129,18 +129,18 @@ export function InvoicesTableSkeleton() {
                 <TBodyRow key={idx}>
                   <TD>
                     <div className="flex items-center gap-3">
-                      <div className="h-7 w-7 rounded-full bg-gray-300" />
-                      <div className="h-4 w-24 bg-gray-300 rounded" />
+                      <div className="h-7 w-7 rounded-full bg-gray-200" />
+                      <div className="h-4 w-24 bg-gray-200 rounded" />
                     </div>
                   </TD>
-                  <TD><div className="h-4 w-32 bg-gray-300 rounded" /></TD>
-                  <TD><div className="h-4 w-16 bg-gray-300 rounded" /></TD>
-                  <TD><div className="h-4 w-20 bg-gray-300 rounded" /></TD>
-                  <TD><div className="h-6 w-16 bg-gray-300 rounded-full" /></TD>
+                  <TD><div className="h-4 w-32 bg-gray-200 rounded" /></TD>
+                  <TD><div className="h-4 w-16 bg-gray-200 rounded" /></TD>
+                  <TD><div className="h-4 w-20 bg-gray-200 rounded" /></TD>
+                  <TD><div className="h-6 w-16 bg-gray-200 rounded-full" /></TD>
                   <TD>
-                    <div className="flex gap-3">
-                      <div className="h-9 w-9 bg-gray-300 rounded" />
-                      <div className="h-9 w-9 bg-gray-300 rounded" />
+                    <div className="flex gap-3 w-full justify-end">
+                      <div className="h-9 w-9 bg-gray-200 rounded" />
+                      <div className="h-9 w-9 bg-gray-200 rounded" />
                     </div>
                   </TD>
                 </TBodyRow>
@@ -167,27 +167,27 @@ export function CustomersTableSkeleton() {
                 <MobileTableRow>
                   <div className='py-1'>
                     <div className="flex items-center gap-3">
-                      <div className="h-7 w-7 rounded-full bg-gray-300" />
-                      <div className="h-4 w-24 bg-gray-300 rounded" />
+                      <div className="h-7 w-7 rounded-full bg-gray-200" />
+                      <div className="h-4 w-24 bg-gray-200 rounded" />
                     </div>
-                    <div className="h-3 mt-2 w-24 bg-gray-300 rounded" />
+                    <div className="h-3 mt-2 w-24 bg-gray-200 rounded" />
                   </div>
                 </MobileTableRow>
                 <MobileTableRow>
                   <div className='py-1 flex w-full'>
                     <div className="flex w-1/2 flex-col gap-1">
-                      <div className="h-3 w-12 bg-gray-300 rounded" />
-                      <div className="h-4 w-16 bg-gray-300 rounded" />
+                      <div className="h-3 w-12 bg-gray-200 rounded" />
+                      <div className="h-4 w-16 bg-gray-200 rounded" />
                     </div>
                     <div className="flex w-1/2 flex-col gap-1">
-                      <div className="h-3 w-12 bg-gray-300 rounded" />
-                      <div className="h-4 w-16 bg-gray-300 rounded" />
+                      <div className="h-3 w-12 bg-gray-200 rounded" />
+                      <div className="h-4 w-16 bg-gray-200 rounded" />
                     </div>
                   </div>
                 </MobileTableRow>
                 <MobileTableRow>
                   <div className='py-1'>
-                    <div className="h-4 w-24 bg-gray-300 rounded" />
+                    <div className="h-4 w-24 bg-gray-200 rounded" />
                   </div>
                 </MobileTableRow>
               </MobileTableRowContainer>
@@ -202,18 +202,18 @@ export function CustomersTableSkeleton() {
                 <TBodyRow key={idx}>
                   <TD>
                     <div className="flex items-center gap-3">
-                      <div className="h-7 w-7 rounded-full bg-gray-300" />
-                      <div className="h-4 w-24 bg-gray-300 rounded" />
+                      <div className="h-7 w-7 rounded-full bg-gray-200" />
+                      <div className="h-4 w-24 bg-gray-200 rounded" />
                     </div>
                   </TD>
-                  <TD><div className="h-4 w-32 bg-gray-300 rounded" /></TD>
-                  <TD><div className="h-4 w-8 bg-gray-300 rounded" /></TD>
-                  <TD><div className="h-4 w-16 bg-gray-300 rounded" /></TD>
-                  <TD><div className="h-4 w-16 bg-gray-300 rounded" /></TD>
+                  <TD><div className="h-4 w-32 bg-gray-200 rounded" /></TD>
+                  <TD><div className="h-4 w-8 bg-gray-200 rounded" /></TD>
+                  <TD><div className="h-4 w-16 bg-gray-200 rounded" /></TD>
+                  <TD><div className="h-4 w-16 bg-gray-200 rounded" /></TD>
                   <TD>
-                    <div className="flex gap-3">
-                      <div className="h-9 w-9 bg-gray-300 rounded" />
-                      <div className="h-9 w-9 bg-gray-300 rounded" />
+                    <div className="flex gap-3 w-full justify-end">
+                      <div className="h-9 w-9 bg-gray-200 rounded" />
+                      <div className="h-9 w-9 bg-gray-200 rounded" />
                     </div>
                   </TD>
                 </TBodyRow>
@@ -237,7 +237,7 @@ export function PaginationSkeleton() {
           <div
             className={clsx(
               'flex h-10 w-10 items-center justify-center rounded-md border',
-              'bg-gray-300 mr-2 md:mr-4',
+              'bg-gray-200 mr-2 md:mr-4',
             )}
           />
 
@@ -248,7 +248,7 @@ export function PaginationSkeleton() {
                 key={i}
                 className={clsx(
                   'flex h-10 w-10 items-center justify-center text-sm border',
-                  'bg-gray-300 text-transparent select-none',
+                  'bg-gray-200 text-transparent select-none',
                   {
                     'rounded-l-md': i === 0,
                     'rounded-r-md': i === fakeButtons.length - 1,
@@ -264,7 +264,7 @@ export function PaginationSkeleton() {
           <div
             className={clsx(
               'flex h-10 w-10 items-center justify-center rounded-md border',
-              'bg-gray-300 ml-2 md:ml-4',
+              'bg-gray-200 ml-2 md:ml-4',
             )}
           />
         </div>

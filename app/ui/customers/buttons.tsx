@@ -1,11 +1,11 @@
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { deleteCustomer } from '@/app/lib/actions';
+import { deleteCustomer } from '@/app/lib/customers/actions';
 
 export function CreateCustomer() {
   return (
     <Link
-      href="/dashboard/customer/create"
+      href="/dashboard/customers/create"
       className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
     >
       <span className="hidden md:block">Create Customer</span>
@@ -26,10 +26,10 @@ export function UpdateCustomer({ id }: { id: string }) {
 }
 
 export function DeleteCustomer({ id }: { id: string }) {
-  const deleteInvoiceWithId = deleteCustomer.bind(null, id);
+  const deleteCustomerWithId = deleteCustomer.bind(null, id);
 
   return (
-    <form action={deleteInvoiceWithId}>
+    <form action={deleteCustomerWithId}>
       <button type="submit" className="rounded-md border hover:bg-gray-100 size-9 flex items-center justify-center">
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-4" />
