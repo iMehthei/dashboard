@@ -189,6 +189,10 @@ export function CustomersTableSkeleton() {
                   <div className='py-1'>
                     <div className="h-4 w-24 bg-gray-200 rounded" />
                   </div>
+                  <div className="flex gap-3 w-full justify-end">
+                    <div className="h-9 w-9 bg-gray-200 rounded" />
+                    <div className="h-9 w-9 bg-gray-200 rounded" />
+                  </div>
                 </MobileTableRow>
               </MobileTableRowContainer>
             ))}

@@ -33,6 +33,10 @@ export default async function CustomersTable({
             </MobileTableRow>
             <MobileTableRow>
               <p>{customer.total_invoices} invoices</p>
+              <EditCell>
+                <UpdateCustomer id={customer.id} />
+                <DeleteCustomer id={customer.id} />
+              </EditCell>
             </MobileTableRow>
           </MobileTableRowContainer>
         ))}
