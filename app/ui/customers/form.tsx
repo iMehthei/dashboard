@@ -4,21 +4,24 @@ import { updateCustomer, createCustomer, State } from '@/app/lib/customers/actio
 import { Customer } from '@/app/lib/customers/definitions';
 import { Form, Input } from "@/app/ui/form"
 import { AtSymbolIcon, PhotoIcon, UserIcon } from "@heroicons/react/24/outline";
-import { useActionState } from "react";
+import { useRouter } from 'next/navigation';
+import { useActionState, useEffect } from "react";
 
-export default function CustomerForm({
-  customer
-}: {
-  customer: Customer | null
-}) {
+export default function CustomerForm({ customer }: { customer?: Customer }) {
 
   const initialState: State = { message: null, errors: {} };
   const onSubmit = customer ? updateCustomer.bind(null, customer.id) : createCustomer
-  const [state, formAction] = useActionState(onSubmit, initialState);
+  const [state, formAction, isPending] = useActionState(onSubmit, initialState);
+  const router = useRouter();
+  
+  useEffect(() => {
+    if ((state as any).success) router.push("/dashboard/customers");
+  }, [state, router]);
 
   return (
     <Form
       formAction={formAction}
+      isPending={isPending}
       submitButtonText={customer ? "Edit Customer" : "Create Customer"}
       cancelButtonLink={"/dashboard/customers"}
       message={state.message ?? null}

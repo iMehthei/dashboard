@@ -74,7 +74,8 @@ export async function createCustomer(
       VALUES (${uuid}, ${name}, ${email}, ${imageUrl})
     `;
 
-    return { message: "Customer created successfully" };
+    revalidatePath('/dashboard/customers');
+    return { success: true };
   } catch (err) {
     console.error(err);
     return { message: "Internal server error" };

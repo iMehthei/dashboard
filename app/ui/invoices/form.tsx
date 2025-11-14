@@ -4,8 +4,9 @@ import type { InvoiceForm } from "@/app/lib/invoices/definitions";
 import type { CustomerField } from "@/app/lib/customers/definitions";
 import { CheckIcon, ClockIcon, CurrencyDollarIcon, UserCircleIcon, } from '@heroicons/react/24/outline';
 import { updateInvoice, createInvoice, State } from '@/app/lib/invoices/actions';
-import { useActionState } from 'react';
+import { useActionState, useEffect } from 'react';
 import { Fieldset, Form, Input, Select } from '@/app/ui/form';
+import { useRouter } from "next/navigation";
 
 type InvoiceFormProps = {
   invoice?: InvoiceForm;
@@ -19,11 +20,17 @@ export default function InvoiceForm({
 
   const initialState: State = { message: null, errors: {} };
   const onSubmit = invoice ? updateInvoice.bind(null, invoice.id) : createInvoice
-  const [state, formAction] = useActionState(onSubmit, initialState);
+  const [state, formAction, isPending] = useActionState(onSubmit, initialState);
+  const router = useRouter();
+
+  useEffect(() => {
+    if ((state as any).success) router.push("/dashboard/customers");
+  }, [state, router]);
 
   return (
     <Form
       formAction={formAction}
+      isPending={isPending}
       submitButtonText={invoice ? "Edit Invoice" : "Create Invoice"}
       cancelButtonLink={"/dashboard/invoices"}
       message={state.message ?? null}

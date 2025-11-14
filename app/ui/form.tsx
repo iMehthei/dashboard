@@ -2,6 +2,8 @@ import type { ComponentType, SVGProps } from 'react';
 import { Button } from '@/app/ui/button';
 type IconType = ComponentType<SVGProps<SVGSVGElement>>;
 import Link from 'next/link';
+import { PulseLoader } from 'react-spinners'
+import clsx from 'clsx';
 
 const titleClass = "mb-2 block text-sm font-medium"
 const errorClass = "mt-2 text-sm text-red-500"
@@ -82,12 +84,14 @@ export function Fieldset({
 export function Form({
   children,
   formAction,
+  isPending,
   submitButtonText,
   cancelButtonLink,
   message
 }: {
   children: React.ReactNode
   formAction: (formData: FormData) => void | Promise<any>
+  isPending: boolean
   submitButtonText: string
   cancelButtonLink: string
   message: string | null
@@ -106,7 +110,10 @@ export function Form({
         >
           Cancel
         </Link>
-        <Button type="submit">{submitButtonText}</Button>
+        <Button type="submit" className='relative'>
+          <span className={clsx(isPending ? 'scale-0 opacity-0' : '')}>{submitButtonText}</span>
+          <PulseLoader color='#FFF' className={clsx(isPending ? '' : 'opacity-0 scale-0', 'absolute left-1/2 -translate-x-1/2')} />
+        </Button>
       </div>
     </form>
   )
