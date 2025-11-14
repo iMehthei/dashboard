@@ -6,6 +6,7 @@ import { redirect } from 'next/navigation';
 import { sql } from '@/app/lib/data';
 import { UTApi } from "uploadthing/server";
 import { v4 as uuidv4 } from 'uuid';
+import { Customer } from './definitions';
 
 const utapi = new UTApi({ token: process.env.UPLOADTHING_TOKEN });
 
@@ -82,7 +83,6 @@ export async function createCustomer(
   }
 }
 
-
 export async function updateCustomer(
   id: string,
   prevState: State,
@@ -120,8 +120,25 @@ export async function updateCustomer(
   redirect('/dashboard/customers');
 }
 
-export async function deleteCustomer(id: string) {
-  await sql`DELETE FROM customers WHERE id = ${id}`;
-  revalidatePath('/dashboard/customers');
+export async function deleteCustomer(customer: Customer) {
+  try {
+    if (customer?.image_url) {
+      try {
+        const fileName = customer.image_url.split('/').pop();
+        if (fileName) await utapi.deleteFiles([fileName]);
+      } catch (err) {
+        console.error("Failed to delete image from UploadThing:", err);
+      }
+    }
+
+    await sql`DELETE FROM customers WHERE id = ${customer.id}`;
+    revalidatePath('/dashboard/customers');
+
+    return { success: true, message: 'Customer and image deleted successfully!' };
+  } catch (error) {
+    console.error(error);
+    return { success: false, message: 'Failed to delete customer.' };
+  }
 }
+
 

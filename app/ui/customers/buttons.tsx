@@ -1,6 +1,12 @@
+"use client"
+
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { deleteCustomer } from '@/app/lib/customers/actions';
+import { useActionState } from 'react';
+import clsx from 'clsx';
+import { BeatLoader, FadeLoader, MoonLoader, PacmanLoader } from 'react-spinners';
+import { Customer } from '@/app/lib/customers/definitions';
 
 export function CreateCustomer() {
   return (
@@ -25,14 +31,16 @@ export function UpdateCustomer({ id }: { id: string }) {
   );
 }
 
-export function DeleteCustomer({ id }: { id: string }) {
-  const deleteCustomerWithId = deleteCustomer.bind(null, id);
+export function DeleteCustomer({ customer }: { customer: Customer }) {
+  const handleDelete = deleteCustomer.bind(null, customer);
+  const [state, formAction, isPending] = useActionState(handleDelete, null);
 
   return (
-    <form action={deleteCustomerWithId}>
-      <button type="submit" className="rounded-md border hover:bg-gray-100 size-9 flex items-center justify-center">
+    <form action={formAction}>
+      <button type="submit" className='border hover:bg-gray-100 size-9 flex items-center justify-center relative'>
         <span className="sr-only">Delete</span>
-        <TrashIcon className="w-4" />
+        <TrashIcon className={clsx(isPending ? 'hidden' : 'w-4')} />
+        <MoonLoader size={18} loading={isPending} />
       </button>
     </form>
   );

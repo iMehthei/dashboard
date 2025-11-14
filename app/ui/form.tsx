@@ -112,7 +112,7 @@ export function Form({
         </Link>
         <Button type="submit" className='relative'>
           <span className={clsx(isPending ? 'scale-0 opacity-0' : '')}>{submitButtonText}</span>
-          <PulseLoader color='#FFF' className={clsx(isPending ? '' : 'opacity-0 scale-0', 'absolute left-1/2 -translate-x-1/2')} />
+          <PulseLoader size={10} color='#FFF' loading={isPending} className='absolute left-1/2 -translate-x-1/2' />
         </Button>
       </div>
     </form>
