@@ -4,6 +4,11 @@ import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { sql } from '@/app/lib/data';
+import { UTApi } from "uploadthing/server";
+import { v4 as uuidv4 } from 'uuid';
+
+const utapi = new UTApi({ token: process.env.UPLOADTHING_TOKEN });
+
 
 const FormSchema = z.object({
   id: z.string(),
@@ -13,11 +18,11 @@ const FormSchema = z.object({
   email: z.string({
     invalid_type_error: 'Please enter the customer email.',
   }),
-  image_url: z.string()
+  image: z.instanceof(File).optional(), // فایل اختیاری
 });
 
-const CreateCutomer = FormSchema.omit({ id: true, image_url: true });
-const UpdateCutomer = FormSchema.omit({ id: true, image_url: true });
+const CreateCutomer = FormSchema.omit({ id: true });
+const UpdateCutomer = FormSchema.omit({});
 
 export type State = {
   message?: string | null;
@@ -31,37 +36,52 @@ export async function createCustomer(
   prevState: State,
   formData: FormData
 ) {
-
-  const validatedFields = CreateCutomer.safeParse({
-    name: formData.get('name'),
-    email: formData.get('email'),
-  });
-
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Create Customer.',
-    };
-  }
-
-  const { name, email } = CreateCutomer.parse({
-    name: formData.get('name'),
-    email: formData.get('email'),
-  });
-
-
   try {
-    await sql`
-      INSERT INTO customers (name, email)
-      VALUES (${name}, ${email})
-    `;
-  } catch (error) {
-    return { message: 'Database Error: Failed to Create Customer.' };
-  }
+    const uuid = uuidv4()
 
-  revalidatePath('/dashboard/customers');
-  redirect('/dashboard/customers');
+    const validatedFields = CreateCutomer.safeParse({
+      name: formData.get('name'),
+      email: formData.get('email'),
+      image: formData.get("image")
+    });
+
+    if (!validatedFields.success) {
+      return {
+        errors: validatedFields.error.flatten().fieldErrors,
+        message: 'Missing Fields. Failed to Create Customer.',
+      };
+    }
+
+    const { name, email, image } = CreateCutomer.parse({
+      name: formData.get('name'),
+      email: formData.get('email'),
+      image: formData.get('image'),
+    });
+
+    let imageUrl: string | null = null;
+
+    if (image instanceof File) {
+      const renamedFile = new File([image], uuid, {
+        type: image.type,
+        lastModified: image.lastModified,
+      });
+
+      const [result] = await utapi.uploadFiles([renamedFile]);
+      imageUrl = result?.data?.url ?? null;
+    }
+
+    await sql`
+      INSERT INTO customers (id, name, email, image_url)
+      VALUES (${uuid}, ${name}, ${email}, ${imageUrl})
+    `;
+
+    return { message: "Customer created successfully" };
+  } catch (err) {
+    console.error(err);
+    return { message: "Internal server error" };
+  }
 }
+
 
 export async function updateCustomer(
   id: string,

@@ -3,7 +3,7 @@
 import { updateCustomer, createCustomer, State } from '@/app/lib/customers/actions';
 import { Customer } from '@/app/lib/customers/definitions';
 import { Form, Input } from "@/app/ui/form"
-import { AtSymbolIcon, UserIcon } from "@heroicons/react/24/outline";
+import { AtSymbolIcon, PhotoIcon, UserIcon } from "@heroicons/react/24/outline";
 import { useActionState } from "react";
 
 export default function CustomerForm({
@@ -44,6 +44,17 @@ export default function CustomerForm({
         icon={AtSymbolIcon}
         defaultValue={customer?.email ?? undefined}
         errors={state.errors?.email ?? []}
+      />
+      <Input
+        id="image"
+        name="image"
+        label="Image"
+        type="file"
+        placeholder="Upload Email"
+        step={undefined}
+        icon={PhotoIcon}
+        defaultValue={undefined}
+        errors={[]}
       />
     </Form>
   )
