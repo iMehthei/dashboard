@@ -9,7 +9,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 const utapi = new UTApi({ token: process.env.UPLOADTHING_TOKEN });
 
-
 const FormSchema = z.object({
   id: z.string(),
   name: z.string({
