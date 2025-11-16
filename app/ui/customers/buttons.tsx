@@ -31,8 +31,8 @@ export function UpdateCustomer({ id }: { id: string }) {
   );
 }
 
-export function DeleteCustomer({ customer }: { customer: Customer }) {
-  const handleDelete = deleteCustomer.bind(null, customer);
+export function DeleteCustomer({ id }: { id: string }) {
+  const handleDelete = deleteCustomer.bind(null, id);
   const [state, formAction, isPending] = useActionState(handleDelete, null);
 
   return (

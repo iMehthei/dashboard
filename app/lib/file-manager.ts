@@ -1,39 +1,30 @@
 import { UTApi } from "uploadthing/server";
+import { v4 as uuidv4 } from 'uuid';
 
 const utapi = new UTApi({ token: process.env.UPLOADTHING_TOKEN });
 
-export async function uploadImage(file: File, id: string): Promise<string | null> {
-  if (!file) return null;
-
+export async function uploadFile(file: File) {
   try {
+    const id = uuidv4()
     const renamedFile = new File([file], id, {
       type: file.type,
       lastModified: file.lastModified,
     });
-
-    (renamedFile as any).customId = id;
-
     const [result] = await utapi.uploadFiles([renamedFile]);
-
     return result?.data?.url ?? null;
   } catch (error) {
-    console.error("Upload Error:", error);
+    console.error("Upload file failed:", error);
     return null;
   }
 }
 
-
-export async function deleteImage(imageUrl: string): Promise<boolean> {
-  try {
-    if (!imageUrl) return false;
-
-    const fileName = imageUrl.split('/').pop();
-    if (!fileName) return false;
-
-    await utapi.deleteFiles([fileName]);
-    return true;
-  } catch (error) {
-    console.error("Delete Error:", error);
-    return false;
+export async function deleteFile(fileUrl: string) {
+  if (fileUrl) {
+    try {
+      const fileName = fileUrl.split('/').pop();
+      if (fileName) await utapi.deleteFiles([fileName]);
+    } catch (err) {
+      console.error("Failed to delete image from UploadThing:", err);
+    }
   }
 }

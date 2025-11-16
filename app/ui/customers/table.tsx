@@ -35,7 +35,7 @@ export default async function CustomersTable({
               <p>{customer.total_invoices} invoices</p>
               <EditCell>
                 <UpdateCustomer id={customer.id} />
-                <DeleteCustomer customer={customer} />
+                <DeleteCustomer id={customer.id} />
               </EditCell>
             </MobileTableRow>
           </MobileTableRowContainer>
@@ -65,7 +65,7 @@ export default async function CustomersTable({
               <TD>
                 <EditCell>
                   <UpdateCustomer id={customer.id} />
-                  <DeleteCustomer customer={customer} />
+                  <DeleteCustomer id={customer.id} />
                 </EditCell>
               </TD>
             </TBodyRow>
