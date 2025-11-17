@@ -28,3 +28,16 @@ export async function deleteFile(fileUrl: string) {
     }
   }
 }
+
+export async function getAllFiles({ limit = 12, currentPage }: { limit: number, currentPage: number }) {
+  const result = await utapi.listFiles({
+    limit: limit,
+    offset: (currentPage - 1) * limit,
+  })
+  const total = result.files.length
+  return {
+    files: result.files,
+    hasMore: result.hasMore,
+    total: total,
+  };
+}

@@ -5,8 +5,7 @@ import Link from 'next/link';
 import { deleteCustomer } from '@/app/lib/customers/actions';
 import { useActionState } from 'react';
 import clsx from 'clsx';
-import { BeatLoader, FadeLoader, MoonLoader, PacmanLoader } from 'react-spinners';
-import { Customer } from '@/app/lib/customers/definitions';
+import { MoonLoader } from 'react-spinners';
 
 export function CreateCustomer() {
   return (

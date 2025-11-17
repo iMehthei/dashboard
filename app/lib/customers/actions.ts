@@ -80,7 +80,7 @@ export async function updateCustomer(
       WHERE id = ${id}
     `;
   } catch (error) {
-    return { message: 'Database Error: Failed to Update Customer.' };
+    return { message: '.' };
   }
   revalidatePath('/dashboard/customers');
   redirect('/dashboard/customers')

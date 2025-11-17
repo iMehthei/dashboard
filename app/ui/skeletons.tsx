@@ -276,3 +276,25 @@ export function PaginationSkeleton() {
     </div>
   );
 }
+
+export function GalleryCardSkeleton() {
+  return (
+    <div className="">
+      <div className="border rounded overflow-hidden shadow aspect-square bg-gray-200"></div>
+      <div className="h-4 w-3/4 bg-gray-200 mt-2 rounded" />
+    </div>
+  );
+}
+
+export function GalleryCardsSkeleton() {
+  return (
+    <div className="relative overflow-hidden">
+      <div className={`${shimmer} grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-8 p-2 `}>
+        {Array.from({ length: 12 }).map((_, i) => (
+          <GalleryCardSkeleton key={i} />
+        ))}
+      </div>
+    </div>
+  );
+}
+

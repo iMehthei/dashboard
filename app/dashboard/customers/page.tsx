@@ -2,9 +2,9 @@ import CustomersTable from '@/app/ui/customers/table';
 import { CustomersTableSkeleton, PaginationSkeleton } from '@/app/ui/skeletons';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
-import { lusitana } from '@/app/ui/fonts';
 import Search from '@/app/ui/search';
 import { CreateCustomer } from '@/app/ui/customers/buttons';
+import { H1 } from '@/app/ui/heading';
 
 
 export const metadata: Metadata = {
@@ -24,9 +24,9 @@ export default async function Page(props: {
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
-        <h1 className={`${lusitana.className} text-xl md:text-2xl`}>Customers</h1>
+        <H1>Customers</H1>
       </div>
-      <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
+      <div className="flex items-center justify-between gap-2">
         <Search placeholder="Search customers..." />
         <CreateCustomer />
       </div>
