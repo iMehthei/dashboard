@@ -42,7 +42,18 @@ export default function CustomerForm({ customer }: { customer?: Customer }) {
         defaultValue={customer?.email ?? undefined}
         errors={state.errors?.email ?? []}
       />
-      {customer?.image_url && <input type="hidden" name="image_url" value={customer.image_url} />}
+      {<input type='hidden' name='image_url' value={customer?.image_url || ''} />}
+      <Input
+        id="image"
+        name="image"
+        label="Email"
+        type="file"
+        placeholder="Choose a Image"
+        step={undefined}
+        icon={PhotoIcon}
+        defaultValue={undefined}
+        errors={[]}
+      />
     </Form>
   )
 }

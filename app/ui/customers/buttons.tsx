@@ -6,6 +6,7 @@ import { deleteCustomer } from '@/app/lib/customers/actions';
 import { useActionState } from 'react';
 import clsx from 'clsx';
 import { MoonLoader } from 'react-spinners';
+import { Customer } from '@/app/lib/customers/definitions';
 
 export function CreateCustomer() {
   return (
@@ -30,8 +31,8 @@ export function UpdateCustomer({ id }: { id: string }) {
   );
 }
 
-export function DeleteCustomer({ id }: { id: string }) {
-  const handleDelete = deleteCustomer.bind(null, id);
+export function DeleteCustomer({ customer }: { customer: Customer }) {
+  const handleDelete = deleteCustomer.bind(null, customer);
   const [state, formAction, isPending] = useActionState(handleDelete, null);
 
   return (

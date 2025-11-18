@@ -1,6 +1,6 @@
 import { H1 } from "@/app/ui/heading";
 import UploadForm from "@/app/ui/gallery/form";
-import { Cards } from "@/app/ui/gallery/cards";
+import { GalleryCardsWrapper } from "@/app/ui/gallery/cards";
 import { Suspense } from "react";
 import GalleryPagination from "@/app/ui/gallery/pagination";
 import { GalleryCardsSkeleton, PaginationSkeleton } from "@/app/ui/skeletons";
@@ -22,7 +22,7 @@ export default async function GalleryPage(props: {
       <UploadForm />
 
       <Suspense fallback={<GalleryCardsSkeleton />}>
-        <Cards page={page} limit={limit} />
+        <GalleryCardsWrapper page={page} limit={limit} />
       </Suspense>
 
       <Suspense fallback={<PaginationSkeleton />}>

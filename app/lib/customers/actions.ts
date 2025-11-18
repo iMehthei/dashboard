@@ -5,6 +5,10 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { sql } from '@/app/lib/data';
 import { v4 as uuidv4 } from 'uuid';
+import { UTApi } from "uploadthing/server";
+import { Customer } from './definitions';
+
+const utapi = new UTApi({ token: process.env.UPLOADTHING_TOKEN });
 
 const FormSchema = z.object({
   id: z.string(),
@@ -26,7 +30,7 @@ export type State = {
   };
 };
 
-const CreateCutomer = FormSchema.omit({ id: true });
+const CreateCutomer = FormSchema.omit({ id: true, image_url: true });
 export async function createCustomer(
   prevState: State,
   formData: FormData
@@ -36,18 +40,30 @@ export async function createCustomer(
     const validatedFields = CreateCutomer.safeParse({
       name: formData.get('name'),
       email: formData.get('email'),
-      image_url: formData.get('image_url'),
+      image: formData.get('image'),
     });
     if (!validatedFields.success) return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Missing Fields. Failed to Create Customer.',
     }
-    const { name, email, image_url } = validatedFields.data;
+    const { name, email, image } = validatedFields.data;
+
+    let imageUrl: string | null = null;
+    if (image) {
+      const renamed = new File([image], uuid, { type: image.type });
+      const [uploadedImage] = await utapi.uploadFiles([renamed]);
+      if (uploadedImage?.data?.url) {
+        imageUrl = uploadedImage.data.url;
+      } else {
+        console.error("Image upload failed:", uploadedImage);
+      }
+    }
 
     await sql`
       INSERT INTO customers (id, name, email, image_url)
-      VALUES (${uuid}, ${name}, ${email}, ${image_url})
+      VALUES (${uuid}, ${name}, ${email}, ${imageUrl})
     `;
+    
   } catch (err) {
     console.error(err);
     return { message: "Internal server error" };
@@ -66,17 +82,34 @@ export async function updateCustomer(
     const validatedFields = UpdateCutomer.safeParse({
       name: formData.get('name'),
       email: formData.get('email'),
+      image: formData.get("image"),
       image_url: formData.get("image_url")
     })
     if (!validatedFields.success) return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Missing Fields. Failed to Update Customer.',
     }
-    const { name, email, image_url } = validatedFields.data
+    const { name, email, image, image_url } = validatedFields.data
 
+    let imageUrl: string | null = null;
+    if (image) {
+      let key: string | undefined = undefined
+      if (image_url) {
+        key = image_url.split("/").filter(Boolean).at(-1)
+        key && await utapi.deleteFiles([key]);
+      }
+
+      const renamed = new File([image], id, { type: image.type });
+      const [uploadedImage] = await utapi.uploadFiles([renamed]);
+      if (uploadedImage?.data?.url) {
+        imageUrl = uploadedImage.data.url;
+      } else {
+        console.error("Image upload failed:", uploadedImage);
+      }
+    }
     await sql`
       UPDATE customers
-      SET name = ${name}, email = ${email}, image_url = ${image_url}
+      SET name = ${name}, email = ${email}, image_url = ${imageUrl}
       WHERE id = ${id}
     `;
   } catch (error) {
@@ -86,9 +119,17 @@ export async function updateCustomer(
   redirect('/dashboard/customers')
 }
 
-export async function deleteCustomer(id: string) {
+export async function deleteCustomer(customer: Customer) {
   try {
-    await sql`DELETE FROM customers WHERE id = ${id}`;
+    if (customer?.image_url) {
+      try {
+        const fileName = customer.image_url.split('/').pop();
+        if (fileName) await utapi.deleteFiles([fileName]);
+      } catch (err) {
+        console.error("Failed to delete image from UploadThing:", err);
+      }
+    }
+    await sql`DELETE FROM customers WHERE id = ${customer.id}`;
     revalidatePath('/dashboard/customers');
     return { success: true, message: 'Customer and image deleted successfully!' };
   } catch (error) {

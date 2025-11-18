@@ -3,14 +3,14 @@ import React, { Fragment } from 'react'
 import { DeleteImage } from './buttons'
 import { getGallery } from '@/app/lib/gallery/data';
 
-export async function Cards({ page, limit }: { page: number, limit?: number }) {
+export async function GalleryCardsWrapper({ page, limit }: { page: number, limit?: number }) {
   const { files } = await getGallery({ page, limit });
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-8 p-2">
       {files.map(file => (
         <Fragment key={file.key}>
-          <Card
+          <GalleryCard
             fileKey={file.key}
             name={file.name}
           />
@@ -20,7 +20,7 @@ export async function Cards({ page, limit }: { page: number, limit?: number }) {
   )
 }
 
-export async function Card({ fileKey, name }: { fileKey: string, name: string }) {
+export async function GalleryCard({ fileKey, name }: { fileKey: string, name: string }) {
   return (
     <div>
       <div className="relative group border rounded overflow-hidden shadow aspect-square">
@@ -34,9 +34,6 @@ export async function Card({ fileKey, name }: { fileKey: string, name: string })
         />
         <DeleteImage keyId={fileKey} />
       </div>
-      {/* <div className="truncate text-sm md:text-base">
-        {name}
-      </div> */}
     </div>
   )
 }
