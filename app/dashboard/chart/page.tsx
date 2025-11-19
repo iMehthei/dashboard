@@ -86,11 +86,9 @@ export default function Page() {
     const index = elements[0].index;
 
     if (month === 'all') {
-      // اگر در نمودار سالانه هستیم، روی ماه کلیک شد
       setMonth(index);
       setDay('all');
     } else if (day === 'all') {
-      // اگر در نمودار ماهانه هستیم، روی روز کلیک شد
       setDay(index);
     }
   };

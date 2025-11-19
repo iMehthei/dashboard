@@ -1,4 +1,4 @@
-import { SalesData } from "./definitions";
+import { SalesData, Order } from './definitions';
 
 let nextId = 1;
 
@@ -13,15 +13,15 @@ function randomTime() {
 }
 
 // تولید داده یک ماه با روند صعودی روزانه
-function generateMonthData(monthIndex: number) {
+function generateMonthData(monthIndex: number): Order[][] {
   const days = 30;
-  let baseSales = 3 + monthIndex * 0.5; // ماه‌های بعد پایه فروش بیشتر
-  let baseAmount = 5 + monthIndex; // ماه‌های بعد میانگین amount بیشتر
-  const monthData = [];
+  let baseSales = 3 + monthIndex * 0.5;
+  let baseAmount = 5 + monthIndex;
+  const monthData: Order[][] = [];
 
   for (let i = 0; i < days; i++) {
-    const salesCount = Math.floor(baseSales + Math.random() * 3); // 3 تا 6 فروش در روز
-    const daySales = [];
+    const salesCount = Math.floor(baseSales + Math.random() * 3);
+    const daySales: Order[] = [];
     for (let j = 0; j < salesCount; j++) {
       daySales.push({
         id: nextId++,
@@ -30,22 +30,23 @@ function generateMonthData(monthIndex: number) {
       });
     }
     monthData.push(daySales);
-    baseSales += 0.1 + Math.random() * 0.3; // رشد تدریجی فروش روزانه
-    baseAmount += 0.2; // رشد تدریجی amount روزانه
+    baseSales += 0.1 + Math.random() * 0.3;
+    baseAmount += 0.2;
   }
 
   return monthData;
 }
 
-// تولید داده کل سال با روند صعودی ماهانه
-function generateYearData() {
-  const yearData: Record<number, any> = {};
+// تولید داده کل سال
+function generateYearData(): { [month: number]: Order[][] } {
+  const yearData: { [month: number]: Order[][] } = {};
   for (let m = 0; m < 12; m++) {
     yearData[m] = generateMonthData(m);
   }
   return yearData;
 }
 
+// داده‌ها
 export const stats: SalesData = {
   2025: generateYearData(),
   2024: generateYearData(),
