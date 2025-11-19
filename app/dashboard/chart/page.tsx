@@ -6,6 +6,7 @@ import {
   CategoryScale,
   LinearScale,
   BarElement,
+  BarController,
   Title,
   Tooltip,
   Legend,
@@ -18,7 +19,7 @@ import { monthNames } from '@/app/lib/chart/utils';
 import ChartSelector from '@/app/ui/chart/chart-selector';
 import { H1 } from '@/app/ui/heading';
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, BarElement, BarController, Title, Tooltip, Legend);
 
 export default function Page() {
   const years = Object.keys(stats).map(Number);
