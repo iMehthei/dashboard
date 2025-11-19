@@ -22,10 +22,6 @@ const links = [{
   name: 'Customers',
   href: '/dashboard/customers',
   icon: UserGroupIcon
-}, {
-  name: 'Gallery',
-  href: '/dashboard/gallery',
-  icon: PhotoIcon
 }]
 
 export default function NavLinks() {

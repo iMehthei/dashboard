@@ -5,6 +5,7 @@ import { Suspense } from 'react';
 import Search from '@/app/ui/search';
 import { CreateCustomer } from '@/app/ui/customers/buttons';
 import { H1 } from '@/app/ui/heading';
+import CustomersPagination from '@/app/ui/customers/pagination';
 
 
 export const metadata: Metadata = {
@@ -33,7 +34,9 @@ export default async function Page(props: {
       <Suspense fallback={<CustomersTableSkeleton />}>
         <CustomersTable query={query} currentPage={currentPage} />
       </Suspense>
-      <PaginationSkeleton />
+      <Suspense fallback={<PaginationSkeleton />}>
+        <CustomersPagination query={query} />
+      </Suspense>
     </div>
   );
 }

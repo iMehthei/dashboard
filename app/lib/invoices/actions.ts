@@ -108,5 +108,6 @@ export async function updateInvoice(
 export async function deleteInvoice(id: string) {
   await sql`DELETE FROM invoices WHERE id = ${id}`;
   revalidatePath('/dashboard/invoices');
+  redirect('/dashboard/invoices?page=1');
 }
 

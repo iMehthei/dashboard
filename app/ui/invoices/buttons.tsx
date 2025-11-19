@@ -1,6 +1,11 @@
+'use client'
+
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { deleteInvoice } from '@/app/lib/invoices/actions';
+import { MoonLoader } from 'react-spinners';
+import { useActionState } from 'react';
+import clsx from 'clsx';
 
 export function CreateInvoice() {
   return (
@@ -27,12 +32,13 @@ export function UpdateInvoice({ id }: { id: string }) {
 
 export function DeleteInvoice({ id }: { id: string }) {
   const deleteInvoiceWithId = deleteInvoice.bind(null, id);
-
+  const [state, formAction, isPending] = useActionState(deleteInvoiceWithId, null);
   return (
-    <form action={deleteInvoiceWithId}>
-      <button type="submit" className="rounded-md border hover:bg-gray-100 size-9 flex items-center justify-center">
+    <form action={formAction}>
+      <button type="submit" className='border hover:bg-gray-100 size-9 flex items-center justify-center relative'>
         <span className="sr-only">Delete</span>
-        <TrashIcon className="w-4" />
+        <TrashIcon className={clsx(isPending ? 'hidden' : 'w-4')} />
+        <MoonLoader size={18} loading={isPending} />
       </button>
     </form>
   );

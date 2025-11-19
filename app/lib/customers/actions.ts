@@ -63,7 +63,7 @@ export async function createCustomer(
       INSERT INTO customers (id, name, email, image_url)
       VALUES (${uuid}, ${name}, ${email}, ${imageUrl})
     `;
-    
+
   } catch (err) {
     console.error(err);
     return { message: "Internal server error" };
@@ -91,8 +91,9 @@ export async function updateCustomer(
     }
     const { name, email, image, image_url } = validatedFields.data
 
-    let imageUrl: string | null = null;
-    if (image) {
+    let imageUrl: string | null = image_url;
+
+    if (image && image instanceof File && image.size > 0) {
       let key: string | undefined = undefined
       if (image_url) {
         key = image_url.split("/").filter(Boolean).at(-1)
@@ -115,7 +116,7 @@ export async function updateCustomer(
   } catch (error) {
     return { message: '.' };
   }
-  revalidatePath('/dashboard/customers');
+  revalidatePath('/dashboard');
   redirect('/dashboard/customers')
 }
 
