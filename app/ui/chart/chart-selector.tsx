@@ -12,10 +12,6 @@ interface ChartSelectorProps {
   monthNames: string[];
 }
 
-function Label({ children }: { children: React.ReactNode }) {
-  return <span className="text-gray-700 font-medium mr-2">{children}</span>;
-}
-
 function Option({ value, children }: { value: any; children: React.ReactNode }) {
   return <option value={value}>{children}</option>;
 }
@@ -31,7 +27,7 @@ function SelectInput({
 }) {
   return (
     <select
-      className="border border-gray-300 rounded-md pr-9 pl-3 h-10 bg-white focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 transition"
+      className="select-no-arrow border border-gray-300 rounded-md px-3 h-10 bg-white focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 transition"
       value={value}
       onChange={onChange}
     >
@@ -57,8 +53,8 @@ export default function ChartSelector({
 }: ChartSelectorProps) {
   return (
     <div className="flex flex-wrap gap-4 mb-4">
+
       <SelectorWrapper>
-        <Label>Year:</Label>
         <SelectInput
           value={year}
           onChange={(e) => {
@@ -76,7 +72,6 @@ export default function ChartSelector({
       </SelectorWrapper>
 
       <SelectorWrapper>
-        <Label>Month:</Label>
         <SelectInput
           value={month}
           onChange={(e) => {
@@ -85,7 +80,7 @@ export default function ChartSelector({
             setDay('all');
           }}
         >
-          <Option value="all">Full Year</Option>
+          <Option value="all">All Months</Option>
           {Object.keys(yearData).map((m) => (
             <Option key={m} value={m}>
               {monthNames[Number(m)]}
@@ -96,14 +91,13 @@ export default function ChartSelector({
 
       {month !== 'all' && (
         <SelectorWrapper>
-          <Label>Day:</Label>
           <SelectInput
             value={day}
             onChange={(e) =>
               setDay(e.target.value === 'all' ? 'all' : Number(e.target.value))
             }
           >
-            <Option value="all">Full Month</Option>
+            <Option value="all">All Days</Option>
             {Array.from({ length: Math.max(yearData[month]?.length || 30, 30) }, (_, i) => (
               <Option key={i} value={i}>
                 Day {i + 1}

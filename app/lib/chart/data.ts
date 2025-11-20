@@ -27,6 +27,7 @@ function generateMonthData(monthIndex: number): Order[][] {
         id: nextId++,
         amount: randomAmount(baseAmount, 5),
         time: randomTime(),
+        status: Math.random() > 0.3 ? 'paid' : 'pending', // 70٪ paid و 30٪ pending
       });
     }
     monthData.push(daySales);
@@ -36,6 +37,7 @@ function generateMonthData(monthIndex: number): Order[][] {
 
   return monthData;
 }
+
 
 // تولید داده کل سال
 function generateYearData(): { [month: number]: Order[][] } {
