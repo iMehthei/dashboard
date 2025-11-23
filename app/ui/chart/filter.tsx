@@ -1,6 +1,8 @@
 'use client';
 
-interface ChartSelectorProps {
+import { CalendarDaysIcon } from "@heroicons/react/24/outline";
+
+interface IChartFilter {
   year: number;
   month: number | 'all';
   day: number | 'all';
@@ -12,35 +14,7 @@ interface ChartSelectorProps {
   monthNames: string[];
 }
 
-function Option({ value, children }: { value: any; children: React.ReactNode }) {
-  return <option value={value}>{children}</option>;
-}
-
-function SelectInput({
-  value,
-  onChange,
-  children,
-}: {
-  value: any;
-  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <select
-      className="select-no-arrow border border-gray-300 rounded-md px-3 h-10 bg-white focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 transition"
-      value={value}
-      onChange={onChange}
-    >
-      {children}
-    </select>
-  );
-}
-
-function SelectorWrapper({ children }: { children: React.ReactNode }) {
-  return <div className="flex items-center bg-white rounded-md shadow-sm">{children}</div>;
-}
-
-export default function ChartSelector({
+export default function ChartFilter({
   year,
   month,
   day,
@@ -50,10 +24,11 @@ export default function ChartSelector({
   setMonth,
   setDay,
   monthNames,
-}: ChartSelectorProps) {
-  return (
-    <div className="flex flex-wrap gap-4 mb-4">
+}: IChartFilter) {
 
+  return (
+    <div className="flex px-3 items-center rounded-md border border-gray-200 overflow-x-auto overflow-y-hidden text-gray-500">
+      <CalendarDaysIcon className="h-[18px] w-[18px] text-gray-500" />
       <SelectorWrapper>
         <SelectInput
           value={year}
@@ -72,6 +47,7 @@ export default function ChartSelector({
       </SelectorWrapper>
 
       <SelectorWrapper>
+        <span className="cursor-default">/</span>
         <SelectInput
           value={month}
           onChange={(e) => {
@@ -80,7 +56,7 @@ export default function ChartSelector({
             setDay('all');
           }}
         >
-          <Option value="all">All Months</Option>
+          <Option value="all">Full Year</Option>
           {Object.keys(yearData).map((m) => (
             <Option key={m} value={m}>
               {monthNames[Number(m)]}
@@ -91,13 +67,14 @@ export default function ChartSelector({
 
       {month !== 'all' && (
         <SelectorWrapper>
+          <span className="cursor-default">/</span>
           <SelectInput
             value={day}
             onChange={(e) =>
               setDay(e.target.value === 'all' ? 'all' : Number(e.target.value))
             }
           >
-            <Option value="all">All Days</Option>
+            <Option value="all">Full Month</Option>
             {Array.from({ length: Math.max(yearData[month]?.length || 30, 30) }, (_, i) => (
               <Option key={i} value={i}>
                 Day {i + 1}
@@ -108,4 +85,32 @@ export default function ChartSelector({
       )}
     </div>
   );
+}
+
+function Option({ value, children }: { value: any; children: React.ReactNode }) {
+  return <option value={value}>{children}</option>;
+}
+
+function SelectInput({
+  value,
+  onChange,
+  children,
+}: {
+  value: any;
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <select
+      className="select-no-arrow h-10 text-sm text-center px-3 h-full outline-none focus:outline-none focus:ring-0 first:text-center outline-none bg-white border-none cursor-pointer transition focus:text-gray-900"
+      value={value}
+      onChange={onChange}
+    >
+      {children}
+    </select>
+  );
+}
+
+function SelectorWrapper({ children }: { children: React.ReactNode }) {
+  return <div className="flex gap-3 items-center bg-white rounded-md shadow-sm ml-3 last:mr-3 text-gray-700">{children}</div>;
 }
