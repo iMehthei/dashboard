@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CalendarDaysIcon } from "@heroicons/react/24/outline";
-// import { monthNames } from "@/app/lib/chart/utils";
 
 interface ChartFilterProps {
   searchParams?: {
@@ -18,12 +17,16 @@ export default function ChartFilterWithParams({ searchParams }: ChartFilterProps
   const sp = useSearchParams();
 
   const currentYear = new Date().getFullYear();
+
   const defaultYear = Number(searchParams?.year) || currentYear;
+  const defaultMonth = searchParams?.month === undefined ? "all" : searchParams?.month === "all" ? "all" : Number(searchParams.month);
+  const defaultDay = searchParams?.day === undefined ? "all" : searchParams?.day === "all" ? "all" : Number(searchParams.day);
 
   const [year, setYear] = useState<number>(defaultYear);
-  const [month, setMonth] = useState<number | "all">(searchParams?.month === undefined ? "all" : Number(searchParams.month));
-  const [day, setDay] = useState<number | "all">(searchParams?.day === undefined ? "all" : Number(searchParams.day));
+  const [month, setMonth] = useState<number | "all">(defaultMonth);
+  const [day, setDay] = useState<number | "all">(defaultDay);
 
+  // Sync state with URL params on mount
   useEffect(() => {
     const urlYear = sp.get("year");
     const urlMonth = sp.get("month");
@@ -34,24 +37,18 @@ export default function ChartFilterWithParams({ searchParams }: ChartFilterProps
     else if (urlMonth) setMonth(Number(urlMonth));
     if (urlDay === "all") setDay("all");
     else if (urlDay) setDay(Number(urlDay));
-  }, []);
+  }, [sp]);
 
+  // Update URL params when state changes
   useEffect(() => {
-    const defaultYear = currentYear;
-    const defaultMonth = "all";
-    const defaultDay = "all";
-
     const params = new URLSearchParams();
 
-    // فقط زمانی پارامترها را اضافه کن که با دیفالت تفاوت داشته باشند
-    if (year !== defaultYear) params.set("year", String(year));
-    if (month !== defaultMonth) params.set("month", String(month));
-    if (day !== defaultDay) params.set("day", String(day));
+    if (year !== currentYear) params.set("year", String(year));
+    if (month !== "all") params.set("month", String(month));
+    if (day !== "all") params.set("day", String(day));
 
-    const search = params.toString();
-    router.replace(`${window.location.pathname}${search ? `?${search}` : ""}`);
-  }, [year, month, day, router]);
-
+    router.replace(`${window.location.pathname}${params.toString() ? `?${params.toString()}` : ""}`);
+  }, [year, month, day, router, currentYear]);
 
   const handleChange = (type: "year" | "month" | "day", value: number | "all") => {
     if (type === "year") {
@@ -67,27 +64,21 @@ export default function ChartFilterWithParams({ searchParams }: ChartFilterProps
   };
 
   const monthNames = [
-    'Jan', // 1
-    'Feb', // 2
-    'Mar', // 3
-    'Apr', // 4
-    'May', // 5
-    'Jun', // 6
-    'Jul', // 7
-    'Aug', // 8
-    'Sep', // 9
-    'Oct', // 10
-    'Nov', // 11
-    'Dec', // 12
+    'Jan','Feb','Mar','Apr','May','Jun',
+    'Jul','Aug','Sep','Oct','Nov','Dec'
   ];
 
   const years = [currentYear - 2, currentYear - 1, currentYear, currentYear + 1, currentYear + 2];
   const months = Array.from({ length: 12 }, (_, i) => i + 1);
 
+  // محاسبه تعداد روزهای ماه برای سلکتور، با در نظر گرفتن سال کبیسه
+  const daysInMonth = month !== "all" ? new Date(year, Number(month), 0).getDate() : 31;
+
   return (
     <div className="flex px-3 items-center rounded-md border border-gray-200 overflow-x-auto text-gray-500">
       <CalendarDaysIcon className="h-[18px] w-[18px]" />
 
+      {/* Year Selector */}
       <SelectorWrapper>
         <SelectInput value={year} onChange={(e) => handleChange("year", Number(e.target.value))}>
           {years.map((y) => (
@@ -96,6 +87,7 @@ export default function ChartFilterWithParams({ searchParams }: ChartFilterProps
         </SelectInput>
       </SelectorWrapper>
 
+      {/* Month Selector */}
       <SelectorWrapper>
         <span>/</span>
         <SelectInput
@@ -109,6 +101,7 @@ export default function ChartFilterWithParams({ searchParams }: ChartFilterProps
         </SelectInput>
       </SelectorWrapper>
 
+      {/* Day Selector */}
       {month !== "all" && (
         <SelectorWrapper>
           <span>/</span>
@@ -117,7 +110,7 @@ export default function ChartFilterWithParams({ searchParams }: ChartFilterProps
             onChange={(e) => handleChange("day", e.target.value === "all" ? "all" : Number(e.target.value))}
           >
             <option value="all">Full Month</option>
-            {Array.from({ length: 31 }, (_, i) => (
+            {Array.from({ length: daysInMonth }, (_, i) => (
               <option key={i} value={i + 1}>{i + 1}</option>
             ))}
           </SelectInput>
