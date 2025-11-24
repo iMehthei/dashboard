@@ -1,6 +1,10 @@
 import { sql } from '../data';
 import { ChartJsProps, ChartJsDataset, InvoiceRow } from './definitions';
 
+function normalizeAmount(amount: any): number {
+  return Number((Number(amount) / 100).toFixed(2));
+}
+
 export async function fetchChartRawData(
   year?: number,
   month?: 'all' | number,
@@ -59,7 +63,7 @@ export async function fetchChartDataForChartJS(
     raw.forEach(r => {
       const dt = new Date(r.date);
       const m = dt.getMonth() + 1;
-      map[r.status][m] = (map[r.status][m] || 0) + Number(r.amount);
+      map[r.status][m] = (map[r.status][m] || 0) + normalizeAmount(r.amount);
     });
 
     const datasets: ChartJsDataset[] = statuses.map(status => ({
@@ -82,7 +86,7 @@ export async function fetchChartDataForChartJS(
       const dt = new Date(r.date);
       const d = dt.getDate();
       if (dt.getMonth() + 1 === month) {
-        map[r.status][d] = (map[r.status][d] || 0) + Number(r.amount);
+        map[r.status][d] = (map[r.status][d] || 0) + normalizeAmount(r.amount);
       }
     });
 
@@ -105,7 +109,7 @@ export async function fetchChartDataForChartJS(
       const dt = new Date(r.date);
       const h = dt.getHours();
       if (dt.getMonth() + 1 === month && dt.getDate() === day) {
-        map[r.status][h] = (map[r.status][h] || 0) + Number(r.amount);
+        map[r.status][h] = (map[r.status][h] || 0) + normalizeAmount(r.amount);
       }
     });
 
@@ -124,8 +128,47 @@ export async function fetchChartDataForChartJS(
   return { labels: [], datasets: [] };
 }
 
+const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+export async function fetchOverviewRevenue() {
+  const now = new Date();
+  const lastYear = new Date();
+  lastYear.setMonth(now.getMonth() - 11);
 
+  try {
+    const result = await sql`
+      SELECT amount, date
+      FROM invoices
+      WHERE date >= ${lastYear} AND date <= ${now}
+      AND status = 'paid'
+    `;
 
+    const map: Record<number, number> = {};
 
+    result.forEach((r: any) => {
+      const dt = new Date(r.date);
+      const monthIndex = dt.getMonth();
+      const amount = normalizeAmount(r.amount);
 
+      map[monthIndex] = (map[monthIndex] || 0) + amount;
+    });
+
+    const output = [];
+    let cursor = new Date(lastYear);
+
+    for (let i = 0; i < 12; i++) {
+      const m = cursor.getMonth();
+      output.push({
+        month: MONTH_NAMES[m],
+        revenue: Number((map[m] || 0).toFixed(2)),
+      });
+      cursor.setMonth(cursor.getMonth() + 1);
+    }
+
+    return output;
+
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch overview revenue.");
+  }
+}

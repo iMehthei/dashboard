@@ -1,5 +1,5 @@
 import postgres from 'postgres';
-import { Revenue,} from '@/app/lib/definitions';
+import { Revenue} from '@/app/lib/definitions';
 import { formatCurrency } from '@/app/lib/utils';
 
 export const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
@@ -8,16 +8,7 @@ export const ITEMS_PER_PAGE = 6;
 
 export async function fetchRevenue() {
   try {
-    // Artificially delay a response for demo purposes.
-    // Don't do this in production :)
-
-    // console.log('Fetching revenue data...');
-    // await new Promise((resolve) => setTimeout(resolve, 3000));
-
     const data = await sql<Revenue[]>`SELECT * FROM revenue`;
-
-    // console.log('Data fetch completed after 3 seconds.');
-
     return data;
   } catch (error) {
     console.error('Database Error:', error);

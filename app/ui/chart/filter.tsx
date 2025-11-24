@@ -1,84 +1,110 @@
-'use client';
+"use client";
 
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { CalendarDaysIcon } from "@heroicons/react/24/outline";
+import { ChartFilterProps } from "@/app/lib/chart/definitions";
 
-interface IChartFilter {
-  year: number;
-  month: number | 'all';
-  day: number | 'all';
-  years: number[];
-  yearData: any;
-  setYear: (y: number) => void;
-  setMonth: (m: number | 'all') => void;
-  setDay: (d: number | 'all') => void;
-  monthNames: string[];
-}
+export default function ChartFilter({ searchParams }: ChartFilterProps) {
+  const router = useRouter();
+  const sp = useSearchParams();
 
-export default function ChartFilter({
-  year,
-  month,
-  day,
-  years,
-  yearData,
-  setYear,
-  setMonth,
-  setDay,
-  monthNames,
-}: IChartFilter) {
+  const currentYear = new Date().getFullYear();
+
+  const defaultYear = Number(searchParams?.year) || currentYear;
+  const defaultMonth = searchParams?.month === undefined ? "all" : searchParams?.month === "all" ? "all" : Number(searchParams.month);
+  const defaultDay = searchParams?.day === undefined ? "all" : searchParams?.day === "all" ? "all" : Number(searchParams.day);
+
+  const [year, setYear] = useState<number>(defaultYear);
+  const [month, setMonth] = useState<number | "all">(defaultMonth);
+  const [day, setDay] = useState<number | "all">(defaultDay);
+
+  // Sync state with URL params on mount
+  useEffect(() => {
+    const urlYear = sp.get("year");
+    const urlMonth = sp.get("month");
+    const urlDay = sp.get("day");
+
+    if (urlYear) setYear(Number(urlYear));
+    if (urlMonth === "all") setMonth("all");
+    else if (urlMonth) setMonth(Number(urlMonth));
+    if (urlDay === "all") setDay("all");
+    else if (urlDay) setDay(Number(urlDay));
+  }, [sp]);
+
+  // Update URL params when state changes
+  useEffect(() => {
+    const params = new URLSearchParams();
+
+    if (year !== currentYear) params.set("year", String(year));
+    if (month !== "all") params.set("month", String(month));
+    if (day !== "all") params.set("day", String(day));
+
+    router.replace(`${window.location.pathname}${params.toString() ? `?${params.toString()}` : ""}`);
+  }, [year, month, day, router, currentYear]);
+
+  const handleChange = (type: "year" | "month" | "day", value: number | "all") => {
+    if (type === "year") {
+      setYear(value as number);
+      setMonth("all");
+      setDay("all");
+    } else if (type === "month") {
+      setMonth(value);
+      setDay("all");
+    } else if (type === "day") {
+      setDay(value);
+    }
+  };
+
+  const monthNames = [
+    'Jan','Feb','Mar','Apr','May','Jun',
+    'Jul','Aug','Sep','Oct','Nov','Dec'
+  ];
+
+  const years = [currentYear - 2, currentYear - 1, currentYear, currentYear + 1, currentYear + 2];
+  const months = Array.from({ length: 12 }, (_, i) => i + 1);
+
+  // محاسبه تعداد روزهای ماه برای سلکتور، با در نظر گرفتن سال کبیسه
+  const daysInMonth = month !== "all" ? new Date(year, Number(month), 0).getDate() : 31;
 
   return (
-    <div className="flex px-3 items-center rounded-md border border-gray-200 overflow-x-auto overflow-y-hidden text-gray-500">
-      <CalendarDaysIcon className="h-[18px] w-[18px] text-gray-500" />
+    <div className="flex px-3 items-center rounded-md border border-gray-200 overflow-x-auto text-gray-500">
+      <CalendarDaysIcon className="h-[18px] w-[18px]" />
+
+      {/* Year Selector */}
       <SelectorWrapper>
-        <SelectInput
-          value={year}
-          onChange={(e) => {
-            setYear(Number(e.target.value));
-            setMonth('all');
-            setDay('all');
-          }}
-        >
+        <SelectInput value={year} onChange={(e) => handleChange("year", Number(e.target.value))}>
           {years.map((y) => (
-            <Option key={y} value={y}>
-              {y}
-            </Option>
+            <option key={y} value={y}>{y}</option>
           ))}
         </SelectInput>
       </SelectorWrapper>
 
+      {/* Month Selector */}
       <SelectorWrapper>
-        <span className="cursor-default">/</span>
+        <span>/</span>
         <SelectInput
           value={month}
-          onChange={(e) => {
-            const val = e.target.value === 'all' ? 'all' : Number(e.target.value);
-            setMonth(val);
-            setDay('all');
-          }}
+          onChange={(e) => handleChange("month", e.target.value === "all" ? "all" : Number(e.target.value))}
         >
-          <Option value="all">Full Year</Option>
-          {Object.keys(yearData).map((m) => (
-            <Option key={m} value={m}>
-              {monthNames[Number(m)]}
-            </Option>
+          <option value="all">Full Year</option>
+          {months.map((m, i) => (
+            <option key={m} value={m}>{monthNames[i]}</option>
           ))}
         </SelectInput>
       </SelectorWrapper>
 
-      {month !== 'all' && (
+      {/* Day Selector */}
+      {month !== "all" && (
         <SelectorWrapper>
-          <span className="cursor-default">/</span>
+          <span>/</span>
           <SelectInput
             value={day}
-            onChange={(e) =>
-              setDay(e.target.value === 'all' ? 'all' : Number(e.target.value))
-            }
+            onChange={(e) => handleChange("day", e.target.value === "all" ? "all" : Number(e.target.value))}
           >
-            <Option value="all">Full Month</Option>
-            {Array.from({ length: Math.max(yearData[month]?.length || 30, 30) }, (_, i) => (
-              <Option key={i} value={i}>
-                Day {i + 1}
-              </Option>
+            <option value="all">Full Month</option>
+            {Array.from({ length: daysInMonth }, (_, i) => (
+              <option key={i} value={i + 1}>{i + 1}</option>
             ))}
           </SelectInput>
         </SelectorWrapper>
@@ -87,22 +113,10 @@ export default function ChartFilter({
   );
 }
 
-function Option({ value, children }: { value: any; children: React.ReactNode }) {
-  return <option value={value}>{children}</option>;
-}
-
-function SelectInput({
-  value,
-  onChange,
-  children,
-}: {
-  value: any;
-  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  children: React.ReactNode;
-}) {
+function SelectInput({ value, onChange, children }: { value: any; onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void; children: React.ReactNode }) {
   return (
     <select
-      className="select-no-arrow h-10 text-sm text-center px-3 h-full outline-none focus:outline-none focus:ring-0 first:text-center outline-none bg-white border-none cursor-pointer transition focus:text-gray-900"
+      className="select-no-arrow appearance-none border-none outline-none focus:outline-none focus:ring-0 h-10 text-sm text-center px-3 bg-white cursor-pointer"
       value={value}
       onChange={onChange}
     >
@@ -112,5 +126,9 @@ function SelectInput({
 }
 
 function SelectorWrapper({ children }: { children: React.ReactNode }) {
-  return <div className="flex gap-3 items-center bg-white rounded-md shadow-sm ml-3 last:mr-3 text-gray-700">{children}</div>;
+  return (
+    <div className="flex gap-3 items-center bg-white rounded-md shadow-sm ml-3 last:mr-3 text-gray-700">
+      {children}
+    </div>
+  );
 }

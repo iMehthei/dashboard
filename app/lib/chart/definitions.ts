@@ -32,3 +32,11 @@ export interface ChartJsProps {
   labels: string[];
   datasets: ChartJsDataset[];
 }
+
+export interface ChartFilterProps {
+  searchParams?: {
+    year?: number;
+    month?: string | number;
+    day?: string | number;
+  };
+}

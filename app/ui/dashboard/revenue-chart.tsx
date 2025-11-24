@@ -1,12 +1,12 @@
 import { generateYAxis } from '@/app/lib/utils';
 import { CalendarIcon } from '@heroicons/react/24/outline';
 import { lusitana } from '@/app/ui/fonts';
-import { fetchRevenue } from '@/app/lib/data';
+import { fetchOverviewRevenue } from '@/app/lib/chart/data';
 
 export default async function RevenueChart() {
-  const revenue = await fetchRevenue();
+  const revenue = await fetchOverviewRevenue();
   const chartHeight = 350;
-
+  console.log(revenue)
   const { yAxisLabels, topLabel } = generateYAxis(revenue);
 
   if (!revenue || revenue.length === 0) {
@@ -46,7 +46,7 @@ export default async function RevenueChart() {
         </div>
         <div className="flex items-center pb-2 pt-6">
           <CalendarIcon className="h-5 w-5 text-gray-500" />
-          <h3 className="ml-2 text-sm text-gray-500 ">Last 12 months</h3>
+          <h3 className="ml-2 text-sm text-gray-500">Last 12 months</h3>
         </div>
       </div>
     </div>
